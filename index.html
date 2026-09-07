@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>커플 도장판</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%AB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gowun+Dodum&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F2EEE2;
+    --paper-raised: #FFFFFF;
+    --ink: #262420;
+    --ink-soft: #6B6558;
+    --line: #DCD5C2;
+    --teal: #1F6F63;
+    --teal-soft: #DCEAE6;
+    --coral: #C85A3B;
+    --coral-soft: #F3DED4;
+    --gold: #A97A1F;
+    --gold-soft: #F1E6C8;
+    --shadow: 0 1px 2px rgba(38,36,32,0.06), 0 8px 24px rgba(38,36,32,0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #1B1A17;
+      --paper-raised: #24221D;
+      --ink: #EFE9DA;
+      --ink-soft: #A79E8A;
+      --line: #3A362C;
+      --teal: #55BFAD;
+      --teal-soft: #223330;
+      --coral: #E28560;
+      --coral-soft: #3A2A22;
+      --gold: #D9AE55;
+      --gold-soft: #382D18;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #1B1A17;
+    --paper-raised: #24221D;
+    --ink: #EFE9DA;
+    --ink-soft: #A79E8A;
+    --line: #3A362C;
+    --teal: #55BFAD;
+    --teal-soft: #223330;
+    --coral: #E28560;
+    --coral-soft: #3A2A22;
+    --gold: #D9AE55;
+    --gold-soft: #382D18;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Gowun Dodum', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    line-height: 1.5;
+  }
+  h1, h2, h3, .display { font-family: 'Do Hyeon', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; text-wrap: balance; }
+  .num { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  a { color: inherit; }
+  button { font-family: inherit; }
+  ::selection { background: var(--teal-soft); }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .app-shell { max-width: 900px; margin: 0 auto; padding: 0 20px 64px; }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 16px 20px;
+    max-width: 900px; margin: 0 auto;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+  .brand h1 { font-size: 22px; margin: 0; letter-spacing: 0.5px; white-space: nowrap; }
+  .brand .tagline { font-size: 12px; color: var(--ink-soft); display: none; }
+  @media (min-width: 560px) { .brand .tagline { display: inline; } }
+
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+  .role-switch {
+    display: flex; background: var(--paper-raised); border: 1px solid var(--line);
+    border-radius: 999px; padding: 3px; gap: 2px;
+  }
+  .role-switch button {
+    border: none; background: transparent; color: var(--ink-soft);
+    font-size: 13px; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .role-switch button.active { background: var(--teal); color: #fff; }
+  .role-switch button[data-owner="b"].active { background: var(--coral); }
+  .role-switch button:focus-visible, .icon-btn:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+  .icon-btn {
+    width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line);
+    background: var(--paper-raised); color: var(--ink); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; flex: none;
+  }
+  .icon-btn:hover { background: var(--teal-soft); }
+
+  main { padding-top: 24px; }
+  section + section { margin-top: 40px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; gap: 12px; }
+  .section-head h2 { font-size: 19px; margin: 0; }
+  .section-head .hint { font-size: 12px; color: var(--ink-soft); }
+
+  .people-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+  @media (min-width: 640px) { .people-grid { grid-template-columns: 1fr 1fr; } }
+
+  .person-card {
+    background: var(--paper-raised); border: 1px solid var(--line); border-radius: 18px;
+    padding: 20px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+  }
+  .person-card::before {
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 4px;
+    background: var(--accent, var(--teal));
+  }
+  .person-card[data-owner="b"] { --accent: var(--coral); }
+  .person-card__header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .person-card__name { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 600; min-width: 0; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent, var(--teal)); flex: none; }
+  .person-card__total { text-align: right; }
+  .person-card__total .num { font-size: 28px; color: var(--accent, var(--teal)); }
+  .person-card__total .label { font-size: 11px; color: var(--ink-soft); display: block; margin-top: -2px; }
+
+  .stamp-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 14px 0 4px; }
+  .stamp-caption { font-size: 12px; color: var(--ink-soft); margin: 0 0 16px; }
+
+  .task-list { list-style: none; margin: 8px 0 0; padding: 0; }
+  .task-row {
+    display: flex; align-items: center; gap: 10px; padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .task-row:last-child { border-bottom: none; }
+  .task-check {
+    width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--line);
+    background: transparent; cursor: pointer; flex: none; display: flex; align-items: center; justify-content: center;
+    color: var(--accent, var(--teal)); transition: border-color .15s, background .15s;
+  }
+  .task-check.done { border-color: var(--accent, var(--teal)); background: var(--teal-soft); }
+  .person-card[data-owner="b"] .task-check.done { background: var(--coral-soft); }
+  .task-check:disabled { cursor: default; opacity: .8; }
+  .task-title { flex: 1; min-width: 0; font-size: 14.5px; }
+  .task-title.done { color: var(--ink-soft); }
+  .task-stamp-badge {
+    flex: none; font-size: 11px; font-weight: 600; color: var(--gold); background: var(--gold-soft);
+    border-radius: 999px; padding: 2px 8px; font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  .task-status { font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
+  .confirm-btn {
+    border: 1px solid var(--accent, var(--teal)); color: var(--accent, var(--teal)); background: transparent;
+    border-radius: 999px; padding: 6px 12px; font-size: 12.5px; cursor: pointer; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 5px; transition: transform .12s, background .15s;
+  }
+  .confirm-btn:hover { background: var(--teal-soft); }
+  .person-card[data-owner="b"] .confirm-btn:hover { background: var(--coral-soft); }
+  .confirm-btn:active { transform: scale(0.94); }
+  .task-empty { font-size: 13px; color: var(--ink-soft); padding: 10px 0; }
+
+  @keyframes stampPop { 0% { transform: scale(1); } 45% { transform: scale(1.25) rotate(-4deg); } 100% { transform: scale(1); } }
+  .just-stamped { animation: stampPop .38s ease; }
+
+  .coupon-owner-block { --accent: var(--teal); min-width: 0; }
+  .coupon-owner-block[data-owner="b"] { --accent: var(--coral); }
+  .coupon-owner-head { display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 600; margin-bottom: 10px; }
+  .coupon-owner-head .dot { background: var(--accent); }
+  .coupon-shelf { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 6px; margin: 0 -2px; }
+  .coupon-card {
+    flex: 0 0 auto; width: 200px; background: var(--paper-raised); border: 1px solid var(--line);
+    border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow);
+  }
+  .coupon-card__title { font-size: 15px; font-weight: 600; }
+  .coupon-card__cost { font-size: 12px; color: var(--gold); display: flex; align-items: center; gap: 5px; }
+  .progress-track { height: 8px; border-radius: 999px; background: var(--gold-soft); overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--gold); border-radius: 999px; transition: width .25s ease; }
+  .coupon-card__note { font-size: 11.5px; color: var(--ink-soft); }
+  .btn {
+    border-radius: 10px; padding: 9px 14px; font-size: 13.5px; cursor: pointer; border: 1px solid transparent;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: opacity .15s, transform .12s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--teal); color: #fff; }
+  .btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+  .btn-outline { background: transparent; border-color: var(--line); color: var(--ink); }
+  .btn-outline:hover { background: var(--teal-soft); }
+  .btn-danger { background: transparent; color: var(--coral); border-color: var(--coral); }
+  .btn-danger:hover { background: var(--coral-soft); }
+  .btn-ghost { background: transparent; color: var(--ink-soft); }
+  .btn-block { width: 100%; }
+
+  .empty-note {
+    border: 1px dashed var(--line); border-radius: 14px; padding: 18px; color: var(--ink-soft); font-size: 13.5px; text-align: center;
+  }
+
+  .history-list { list-style: none; margin: 0; padding: 0; }
+  .history-item {
+    display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 13.5px;
+  }
+  .history-item:last-child { border-bottom: none; }
+  .history-badge {
+    width: 30px; height: 30px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center;
+    background: var(--teal-soft); color: var(--teal); font-size: 15px;
+  }
+  .history-badge.coupon { background: var(--gold-soft); color: var(--gold); }
+  .history-text b { font-weight: 600; }
+  .history-time { margin-left: auto; font-size: 11.5px; color: var(--ink-soft); flex: none; }
+
+  .footer-note { text-align: center; color: var(--ink-soft); font-size: 12px; margin-top: 48px; }
+
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(20,18,14,0.45); backdrop-filter: blur(2px);
+    display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100;
+  }
+  .modal {
+    background: var(--paper-raised); border-radius: 18px; padding: 26px; width: 100%; max-width: 440px;
+    box-shadow: var(--shadow); max-height: 86vh; overflow-y: auto;
+  }
+  .modal h2 { margin: 0 0 4px; font-size: 21px; }
+  .modal .sub { font-size: 13px; color: var(--ink-soft); margin: 0 0 20px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12.5px; color: var(--ink-soft); margin-bottom: 5px; }
+  .field input {
+    width: 100%; padding: 9px 12px; border-radius: 9px; border: 1px solid var(--line);
+    background: var(--paper); color: var(--ink); font-size: 14px; font-family: inherit;
+  }
+  .field input:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+  .settings-block { margin-bottom: 22px; }
+  .settings-block h3 { font-size: 14.5px; margin: 0 0 10px; display: flex; align-items: center; gap: 6px; }
+  .row-list { list-style: none; margin: 0 0 10px; padding: 0; }
+  .row-item {
+    display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13.5px;
+  }
+  .row-item span { flex: 1; }
+  .row-item .num { color: var(--gold); font-size: 12.5px; }
+  .add-row { display: flex; gap: 6px; }
+  .add-row input { flex: 1; }
+  .add-row input.cost { flex: 0 0 70px; }
+  .tiny-btn {
+    border: none; background: transparent; color: var(--ink-soft); cursor: pointer; padding: 4px; flex: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tiny-btn:hover { color: var(--coral); }
+
+  .center-screen { min-height: 70vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .onboard-card {
+    background: var(--paper-raised); border: 1px solid var(--line); border-radius: 20px; padding: 32px;
+    max-width: 420px; width: 100%; box-shadow: var(--shadow); text-align: center;
+  }
+  .onboard-card .stamp-hero { font-size: 40px; margin-bottom: 6px; }
+  .onboard-card h1 { font-size: 24px; margin: 0 0 6px; }
+  .onboard-card p { font-size: 13.5px; color: var(--ink-soft); margin: 0 0 24px; }
+  .onboard-card .field { text-align: left; }
+  .role-pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+  .role-pick-btn {
+    border: 2px solid var(--line); background: var(--paper); border-radius: 14px; padding: 20px 12px; cursor: pointer;
+    font-size: 15px; font-weight: 600; color: var(--ink); transition: border-color .15s, background .15s;
+  }
+  .role-pick-btn:hover { border-color: var(--teal); background: var(--teal-soft); }
+
+  .setup-card { text-align: left; max-width: 520px; }
+  .setup-card ol { padding-left: 20px; font-size: 13.5px; }
+  .setup-card li { margin-bottom: 10px; }
+  .setup-card code {
+    background: var(--gold-soft); color: var(--ink); padding: 1px 6px; border-radius: 5px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12.5px;
+  }
+  .setup-card pre {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 12px; font-size: 11.5px;
+    overflow-x: auto; font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 999px; font-size: 13px;
+    box-shadow: var(--shadow); z-index: 200; max-width: 90vw;
+  }
+  [data-theme="dark"] .toast, :root:not([data-theme="light"]) .toast { background: var(--paper-raised); color: var(--ink); border: 1px solid var(--line); }
+
+  .loading-screen { min-height: 70vh; display: flex; align-items: center; justify-content: center; color: var(--ink-soft); font-size: 14px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+  import {
+    getFirestore,
+    doc as fsDoc,
+    collection as fsCollection,
+    getDoc as fsGetDoc,
+    setDoc as fsSetDoc,
+    updateDoc as fsUpdateDoc,
+    deleteDoc as fsDeleteDoc,
+    onSnapshot as fsOnSnapshot,
+    addDoc as fsAddDoc,
+    query as fsQuery,
+    where as fsWhere,
+    orderBy as fsOrderBy,
+    limit as fsLimit,
+    getDocs as fsGetDocs
+  } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+  // ---------------------------------------------------------------
+  // 1) Firebase 콘솔(console.firebase.google.com)에서 만든 프로젝트의
+  //    설정 값을 아래에 붙여넣으세요. (자세한 방법은 README.md 참고)
+  // ---------------------------------------------------------------
+  var firebaseConfig = {
+    apiKey: "REPLACE_ME",
+    authDomain: "REPLACE_ME.firebaseapp.com",
+    projectId: "REPLACE_ME",
+    storageBucket: "REPLACE_ME.appspot.com",
+    messagingSenderId: "REPLACE_ME",
+    appId: "REPLACE_ME"
+  };
+
+  (function () {
+    "use strict";
+
+    var TASKS = "tasks", LOGS = "logs", COUPONS = "coupons", EVENTS = "events";
+    var CONFIG_PATH = "app/config";
+    var ROLE_KEY = "stampcard_role_v1";
+
+    // ---------- Firestore-backed store (doc/collection shape) ----------
+    function createFirestoreStore(fdb) {
+      function wrapSnap(snap) {
+        return {
+          id: snap.id,
+          exists: typeof snap.exists === "function" ? snap.exists() : !!snap.exists,
+          data: function () { return snap.data(); },
+          metadata: { fromCache: false, hasPendingWrites: false }
+        };
+      }
+      function wrapQuerySnap(qs) {
+        var docs = qs.docs.map(wrapSnap);
+        return { docs: docs, size: docs.length, empty: docs.length === 0, docChanges: function () { return []; }, metadata: { fromCache: false, hasPendingWrites: false } };
+      }
+      function makeDoc(path) {
+        var ref = fsDoc(fdb, path);
+        return {
+          id: ref.id,
+          path: path,
+          get: function () { return fsGetDoc(ref).then(wrapSnap); },
+          set: function (data) { return fsSetDoc(ref, data); },
+          update: function (data) { return fsUpdateDoc(ref, data); },
+          delete: function () { return fsDeleteDoc(ref); },
+          onSnapshot: function (next, err) { return fsOnSnapshot(ref, function (snap) { next(wrapSnap(snap)); }, err); },
+          collection: function (sub) { return makeCollection(path + "/" + sub); }
+        };
+      }
+      function makeCollection(path, constraints) {
+        constraints = constraints || [];
+        var colRef = fsCollection(fdb, path);
+        function currentQuery() { return constraints.length ? fsQuery.apply(null, [colRef].concat(constraints)) : colRef; }
+        return {
+          path: path,
+          where: function (f, o, v) { return makeCollection(path, constraints.concat([fsWhere(f, o, v)])); },
+          orderBy: function (f, d) { return makeCollection(path, constraints.concat([fsOrderBy(f, d || "asc")])); },
+          limit: function (n) { return makeCollection(path, constraints.concat([fsLimit(n)])); },
+          get: function () { return fsGetDocs(currentQuery()).then(wrapQuerySnap); },
+          onSnapshot: function (next, err) { return fsOnSnapshot(currentQuery(), function (qs) { next(wrapQuerySnap(qs)); }, err); },
+          doc: function (id) { return makeDoc(path + "/" + (id || fsDoc(colRef).id)); },
+          add: function (data) { return fsAddDoc(colRef, data).then(function (ref) { return makeDoc(ref.path); }); }
+        };
+      }
+      return { doc: makeDoc, collection: function (path) { return makeCollection(path); } };
+    }
+
+    // ---------- app state ----------
+    var store = null;
+    var S = {
+      ready: false,
+      configLoaded: false,
+      config: null,
+      tasks: [],
+      todayLogs: {},
+      stamps: { a: 0, b: 0 },
+      coupons: [],
+      events: [],
+      role: null
+    };
+    try { S.role = localStorage.getItem(ROLE_KEY); } catch (e) {}
+
+    var unsubs = [];
+
+    function todayStr() {
+      var d = new Date();
+      var m = String(d.getMonth() + 1).padStart(2, "0");
+      var day = String(d.getDate()).padStart(2, "0");
+      return d.getFullYear() + "-" + m + "-" + day;
+    }
+    function fmtTime(iso) {
+      if (!iso) return "";
+      var d = new Date(iso);
+      var now = new Date();
+      var sameDay = d.toDateString() === now.toDateString();
+      var hh = d.getHours(), mm = String(d.getMinutes()).padStart(2, "0");
+      var ap = hh < 12 ? "오전" : "오후";
+      var h12 = hh % 12 === 0 ? 12 : hh % 12;
+      var timePart = ap + " " + h12 + ":" + mm;
+      if (sameDay) return timePart;
+      return (d.getMonth() + 1) + "." + d.getDate() + " " + timePart;
+    }
+    function esc(s) {
+      return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+    function showToast(msg) {
+      var el = document.getElementById("toast");
+      if (el) el.remove();
+      el = document.createElement("div");
+      el.id = "toast";
+      el.className = "toast";
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(function () { if (el.parentNode) el.remove(); }, 2600);
+    }
+
+    function personById(id) {
+      if (!S.config) return { name: id === "a" ? "나" : "상대방" };
+      return id === "a" ? S.config.personA : S.config.personB;
+    }
+
+    function stampIcon(color, filled, seed) {
+      var rot = ((seed || 0) * 37) % 13 - 6;
+      return '<svg viewBox="0 0 40 40" width="20" height="20" style="transform:rotate(' + rot + 'deg);flex:none" aria-hidden="true">' +
+        '<circle cx="20" cy="20" r="16.5" fill="none" stroke="' + color + '" stroke-width="3"/>' +
+        '<circle cx="20" cy="20" r="8.5" fill="' + (filled ? color : "none") + '" stroke="' + color + '" stroke-width="2"/>' +
+        "</svg>";
+    }
+
+    function tasksFor(owner) {
+      return S.tasks.filter(function (t) { return t.owner === owner; }).sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+    }
+    function couponsFor(owner) {
+      return S.coupons.filter(function (c) { return c.owner === owner; }).sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+    }
+    function logFor(taskId) { return S.todayLogs[taskId]; }
+
+    // ---------- data operations ----------
+    function ensureBootstrap(nameA, nameB) {
+      var config = { personA: { id: "a", name: nameA }, personB: { id: "b", name: nameB } };
+      return store.doc(CONFIG_PATH).set(config)
+        .then(function () { return store.doc("stamps/a").set({ count: 0 }); })
+        .then(function () { return store.doc("stamps/b").set({ count: 0 }); })
+        .then(function () {
+          var seedTasks = [
+            { owner: "a", title: "아침에 물 한 잔 마시기", stamps: 1 },
+            { owner: "a", title: "5분 스트레칭", stamps: 2 },
+            { owner: "a", title: "감사한 일 한 가지 말하기", stamps: 1 },
+            { owner: "b", title: "아침에 물 한 잔 마시기", stamps: 1 },
+            { owner: "b", title: "5분 스트레칭", stamps: 2 },
+            { owner: "b", title: "감사한 일 한 가지 말하기", stamps: 1 }
+          ];
+          return Promise.all(seedTasks.map(function (t, i) {
+            return store.collection(TASKS).add({ owner: t.owner, title: t.title, order: i, stamps: t.stamps, active: true });
+          }));
+        })
+        .then(function () {
+          var seedCoupons = [
+            { owner: "a", title: "커피 사주기", cost: 5 },
+            { owner: "a", title: "영화/메뉴 선택권", cost: 10 },
+            { owner: "a", title: "하루 소원 들어주기", cost: 20 },
+            { owner: "b", title: "커피 사주기", cost: 5 },
+            { owner: "b", title: "영화/메뉴 선택권", cost: 10 },
+            { owner: "b", title: "하루 소원 들어주기", cost: 20 }
+          ];
+          return Promise.all(seedCoupons.map(function (c, i) {
+            return store.collection(COUPONS).add({ owner: c.owner, title: c.title, cost: c.cost, order: i });
+          }));
+        });
+    }
+
+    function toggleTask(task) {
+      var today = todayStr();
+      var id = today + "_" + task.id;
+      var log = logFor(task.id);
+      if (log && log.confirmedAt) return; // already stamped, locked
+      if (log && log.doneAt) {
+        store.doc(LOGS + "/" + id).delete().catch(function () { showToast("변경에 실패했어요"); });
+      } else {
+        store.doc(LOGS + "/" + id).set({ taskId: task.id, owner: task.owner, date: today, doneAt: new Date().toISOString(), confirmedAt: null, confirmedBy: null })
+          .catch(function () { showToast("변경에 실패했어요"); });
+      }
+    }
+
+    function confirmStamp(task, animEl) {
+      var today = todayStr();
+      var id = today + "_" + task.id;
+      var amount = task.stamps || 1;
+      store.doc(LOGS + "/" + id).update({ confirmedAt: new Date().toISOString(), confirmedBy: S.role })
+        .then(function () { return store.doc("stamps/" + task.owner).get(); })
+        .then(function (snap) {
+          var cur = (snap.exists && snap.data().count) || 0;
+          return store.doc("stamps/" + task.owner).set({ count: cur + amount });
+        })
+        .then(function () {
+          return store.collection(EVENTS).add({ type: "stamp", owner: task.owner, detail: task.title, amount: amount, at: new Date().toISOString() });
+        })
+        .then(function () {
+          if (animEl) { animEl.classList.add("just-stamped"); }
+        })
+        .catch(function (e) { showToast("도장을 찍지 못했어요"); });
+    }
+
+    function redeemCoupon(coupon) {
+      var owner = coupon.owner;
+      if (S.role !== owner) return;
+      var cur = S.stamps[owner] || 0;
+      if (cur < coupon.cost) return;
+      if (!window.confirm(personById(owner).name + "님의 도장 " + coupon.cost + "개를 사용해서 '" + coupon.title + "' 쿠폰을 교환할까요?")) return;
+      store.doc("stamps/" + owner).set({ count: cur - coupon.cost })
+        .then(function () {
+          return store.collection(EVENTS).add({ type: "coupon", owner: owner, detail: coupon.title, cost: coupon.cost, at: new Date().toISOString() });
+        })
+        .then(function () { showToast("🎉 '" + coupon.title + "' 쿠폰을 교환했어요"); })
+        .catch(function () { showToast("교환에 실패했어요"); });
+    }
+
+    function addTask(owner, title, stampCount) {
+      var n = parseInt(stampCount, 10);
+      if (!title.trim() || !n || n <= 0) return;
+      var order = tasksFor(owner).length;
+      store.collection(TASKS).add({ owner: owner, title: title.trim(), order: order, stamps: n, active: true }).catch(function () { showToast("추가하지 못했어요"); });
+    }
+    function deleteTask(id) { store.doc(TASKS + "/" + id).delete().catch(function () { showToast("삭제하지 못했어요"); }); }
+    function addCoupon(owner, title, cost) {
+      var n = parseInt(cost, 10);
+      if (!title.trim() || !n || n <= 0) return;
+      var order = couponsFor(owner).length;
+      store.collection(COUPONS).add({ owner: owner, title: title.trim(), cost: n, order: order }).catch(function () { showToast("추가하지 못했어요"); });
+    }
+    function deleteCoupon(id) { store.doc(COUPONS + "/" + id).delete().catch(function () { showToast("삭제하지 못했어요"); }); }
+    function updateNames(nameA, nameB) {
+      store.doc(CONFIG_PATH).update({ personA: { id: "a", name: nameA.trim() || "나" }, personB: { id: "b", name: nameB.trim() || "상대방" } })
+        .catch(function () { showToast("이름을 저장하지 못했어요"); });
+    }
+
+    // ---------- rendering ----------
+    var root = document.getElementById("app");
+
+    function render() {
+      if (!S.ready || !S.configLoaded) { root.innerHTML = renderLoading(); return; }
+      if (!S.config) { root.innerHTML = renderOnboarding(); bindOnboarding(); return; }
+      if (!S.role) { root.innerHTML = renderRolePick(); bindRolePick(); return; }
+      root.innerHTML = renderMain();
+      bindMain();
+    }
+
+    function renderLoading() {
+      return '<div class="loading-screen">불러오는 중…</div>';
+    }
+
+    function renderSetupNeeded() {
+      return (
+        '<div class="center-screen"><div class="onboard-card setup-card">' +
+        '<div class="stamp-hero">🛠️</div>' +
+        "<h1>Firebase 설정이 필요해요</h1>" +
+        "<p>이 페이지를 열어본 방문자에게는 이 화면이 보이지 않아요. 배포하기 전, 만든 사람이 딱 한 번만 설정하면 돼요.</p>" +
+        "<ol>" +
+        "<li><a href=\"https://console.firebase.google.com\" target=\"_blank\" rel=\"noopener\">Firebase 콘솔</a>에서 새 프로젝트를 만들어요 (무료 Spark 요금제)</li>" +
+        "<li>프로젝트 개요 화면에서 웹 아이콘(<code>&lt;/&gt;</code>)을 눌러 웹 앱을 등록하고, 나오는 <code>firebaseConfig</code> 값을 복사해요</li>" +
+        "<li>이 저장소의 <code>index.html</code> 맨 위쪽 <code>firebaseConfig</code> 부분에 붙여넣어요</li>" +
+        "<li>Firebase 콘솔 Build &gt; Firestore Database에서 데이터베이스를 만들고, 규칙 탭에서 아래 규칙을 붙여넣어 게시해요</li>" +
+        "</ol>" +
+        "<pre>rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /{document=**} {\n      allow read, write: if true;\n    }\n  }\n}</pre>" +
+        "<p>자세한 단계는 저장소의 README.md에 있어요.</p>" +
+        "</div></div>"
+      );
+    }
+
+    function renderOnboarding() {
+      return (
+        '<div class="center-screen"><div class="onboard-card">' +
+        '<div class="stamp-hero">🎫</div>' +
+        "<h1>커플 도장판 만들기</h1>" +
+        "<p>매일 할 일을 마치면 서로 도장을 찍어주고, 모은 도장으로 쿠폰을 교환해보세요.</p>" +
+        '<form id="onboard-form">' +
+        '<div class="field"><label for="nameA">첫 번째 사람 이름</label><input id="nameA" required placeholder="예: 지훈" maxlength="12" /></div>' +
+        '<div class="field"><label for="nameB">두 번째 사람 이름</label><input id="nameB" required placeholder="예: 서연" maxlength="12" /></div>' +
+        '<button type="submit" class="btn btn-primary btn-block">시작하기</button>' +
+        "</form>" +
+        "</div></div>"
+      );
+    }
+    function bindOnboarding() {
+      var form = document.getElementById("onboard-form");
+      form.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        var a = document.getElementById("nameA").value.trim() || "나";
+        var b = document.getElementById("nameB").value.trim() || "상대방";
+        var btn = form.querySelector("button");
+        btn.disabled = true; btn.textContent = "만드는 중…";
+        ensureBootstrap(a, b).catch(function () { showToast("초기 설정에 실패했어요. 다시 시도해주세요"); btn.disabled = false; btn.textContent = "시작하기"; });
+      });
+    }
+
+    function renderRolePick() {
+      var a = S.config.personA, b = S.config.personB;
+      return (
+        '<div class="center-screen"><div class="onboard-card">' +
+        '<div class="stamp-hero">🙋</div>' +
+        "<h1>지금 누구세요?</h1>" +
+        "<p>이 기기에서 사용할 이름을 선택해주세요. 나중에 오른쪽 위에서 바꿀 수 있어요.</p>" +
+        '<div class="role-pick-grid">' +
+        '<button class="role-pick-btn" data-role="a">' + esc(a.name) + "</button>" +
+        '<button class="role-pick-btn" data-role="b">' + esc(b.name) + "</button>" +
+        "</div></div></div>"
+      );
+    }
+    function bindRolePick() {
+      Array.prototype.forEach.call(document.querySelectorAll(".role-pick-btn"), function (btn) {
+        btn.addEventListener("click", function () {
+          S.role = btn.getAttribute("data-role");
+          try { localStorage.setItem(ROLE_KEY, S.role); } catch (e) {}
+          render();
+        });
+      });
+    }
+
+    function renderMain() {
+      return (
+        '<div class="topbar">' +
+        '<div class="brand"><h1>🎫 커플 도장판</h1><span class="tagline">오늘의 도장을 확인해보세요</span></div>' +
+        '<div class="topbar-actions">' +
+        renderRoleSwitch() +
+        '<button class="icon-btn" id="settings-btn" title="설정" aria-label="설정">' + gearIcon() + "</button>" +
+        "</div></div>" +
+        '<div class="app-shell"><main>' +
+        renderTodaySection() +
+        renderCouponSection() +
+        renderHistorySection() +
+        '<p class="footer-note">실시간으로 함께 기록되고 있어요</p>' +
+        "</main></div>"
+      );
+    }
+
+    function renderRoleSwitch() {
+      var a = S.config.personA, b = S.config.personB;
+      return (
+        '<div class="role-switch" role="group" aria-label="역할 전환">' +
+        '<button data-owner="a" class="' + (S.role === "a" ? "active" : "") + '">' + esc(a.name) + "</button>" +
+        '<button data-owner="b" class="' + (S.role === "b" ? "active" : "") + '">' + esc(b.name) + "</button>" +
+        "</div>"
+      );
+    }
+
+    function gearIcon() {
+      return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>';
+    }
+
+    function nextGoal(owner) {
+      var count = S.stamps[owner] || 0;
+      var candidates = couponsFor(owner).filter(function (c) { return c.cost > count; }).sort(function (a, b) { return a.cost - b.cost; });
+      return candidates[0] || null;
+    }
+
+    function renderTodaySection() {
+      return (
+        '<section><div class="section-head"><h2>오늘의 할 일</h2><span class="hint">' + esc(todayStrKorean()) + "</span></div>" +
+        '<div class="people-grid">' + renderPersonCard("a") + renderPersonCard("b") + "</div></section>"
+      );
+    }
+    function todayStrKorean() {
+      var d = new Date();
+      var days = ["일", "월", "화", "수", "목", "금", "토"];
+      return (d.getMonth() + 1) + "월 " + d.getDate() + "일 (" + days[d.getDay()] + ")";
+    }
+
+    function renderPersonCard(owner) {
+      var person = personById(owner);
+      var color = owner === "a" ? "var(--teal)" : "var(--coral)";
+      var count = S.stamps[owner] || 0;
+      var goal = nextGoal(owner);
+      var dots = [];
+      var dotTarget = goal ? goal.cost : Math.max(count, 5);
+      for (var i = 0; i < dotTarget; i++) dots.push(stampIcon(color, i < count, i));
+      var list = tasksFor(owner);
+      var itemsHtml = list.length
+        ? list.map(function (t) { return renderTaskRow(t, owner); }).join("")
+        : '<li class="task-empty">아직 할 일이 없어요 · 설정에서 추가해보세요</li>';
+      return (
+        '<div class="person-card" data-owner="' + owner + '">' +
+        '<div class="person-card__header"><div class="person-card__name"><span class="dot"></span>' + esc(person.name) + "</div>" +
+        '<div class="person-card__total"><span class="num">' + count + "</span><span class=\"label\">모은 도장</span></div></div>" +
+        '<div class="stamp-row">' + dots.join("") + "</div>" +
+        '<p class="stamp-caption">' + (goal ? "'" + esc(goal.title) + "'까지 " + (goal.cost - count) + "개 남음" : "모든 쿠폰을 교환할 수 있어요 🎉") + "</p>" +
+        '<ul class="task-list">' + itemsHtml + "</ul>" +
+        "</div>"
+      );
+    }
+
+    function renderTaskRow(task, owner) {
+      var log = logFor(task.id);
+      var done = !!(log && log.doneAt);
+      var confirmed = !!(log && log.confirmedAt);
+      var amount = task.stamps || 1;
+      var statusHtml;
+      if (confirmed) {
+        statusHtml = '<span class="task-status">✔ 도장 완료</span>';
+      } else if (done && S.role === owner) {
+        statusHtml = '<span class="task-status">상대의 도장을 기다리는 중…</span>';
+      } else if (done && S.role !== owner) {
+        statusHtml = '<button class="confirm-btn" data-confirm="' + task.id + '">도장 ' + amount + '개 찍어주기 🔖</button>';
+      } else {
+        statusHtml = "";
+      }
+      return (
+        '<li class="task-row" data-task="' + task.id + '">' +
+        '<button class="task-check' + (done ? " done" : "") + '" data-toggle="' + task.id + '" ' + (S.role === owner && !confirmed ? "" : "disabled") + " aria-label=\"완료 체크\">" +
+        (done ? "✓" : "") +
+        "</button>" +
+        '<span class="task-title' + (done ? " done" : "") + '">' + esc(task.title) + "</span>" +
+        '<span class="task-stamp-badge">+' + amount + "</span>" +
+        statusHtml +
+        "</li>"
+      );
+    }
+
+    function renderCouponSection() {
+      return (
+        '<section><div class="section-head"><h2>쿠폰 교환</h2><span class="hint">각자 자신만의 쿠폰함을 가져요</span></div>' +
+        '<div class="people-grid">' + renderCouponOwnerBlock("a") + renderCouponOwnerBlock("b") + "</div>" +
+        "</section>"
+      );
+    }
+    function renderCouponOwnerBlock(owner) {
+      var person = personById(owner);
+      var list = couponsFor(owner);
+      var cards = list.map(function (c) { return renderCouponCard(c); }).join("");
+      return (
+        '<div class="coupon-owner-block" data-owner="' + owner + '">' +
+        '<div class="coupon-owner-head"><span class="dot"></span>' + esc(person.name) + "의 쿠폰함</div>" +
+        (list.length ? '<div class="coupon-shelf">' + cards + "</div>" : '<div class="empty-note">설정에서 쿠폰을 추가해보세요</div>') +
+        "</div>"
+      );
+    }
+    function renderCouponCard(c) {
+      var owner = c.owner;
+      var count = S.stamps[owner] || 0;
+      var pct = Math.min(100, Math.round((count / c.cost) * 100));
+      var color = owner === "a" ? "var(--teal)" : "var(--coral)";
+      var can = S.role === owner && count >= c.cost;
+      var btnLabel = S.role !== owner ? esc(personById(owner).name) + "님만 교환 가능" : (count >= c.cost ? "교환하기" : "도장 부족");
+      return (
+        '<div class="coupon-card">' +
+        '<div class="coupon-card__title">' + esc(c.title) + "</div>" +
+        '<div class="coupon-card__cost">' + stampIcon("var(--gold)", true, c.order || 0) + '<span class="num">' + c.cost + "개</span></div>" +
+        '<div class="progress-track"><div class="progress-fill" style="width:' + pct + "%;background:" + color + '"></div></div>' +
+        '<div class="coupon-card__note">' + count + " / " + c.cost + "개 모음</div>" +
+        '<button class="btn btn-primary" data-redeem="' + c.id + '" ' + (can ? "" : "disabled") + ">" + btnLabel + "</button>" +
+        "</div>"
+      );
+    }
+
+    function renderHistorySection() {
+      var events = S.events.slice(0, 12);
+      if (!events.length) return '<section><div class="section-head"><h2>최근 기록</h2></div><div class="empty-note">아직 기록이 없어요</div></section>';
+      var items = events.map(function (e) {
+        var person = personById(e.owner);
+        var isCoupon = e.type === "coupon";
+        var text = isCoupon
+          ? "<b>" + esc(person.name) + "</b>님이 도장 " + e.cost + "개로 <b>" + esc(e.detail) + "</b> 쿠폰 교환"
+          : "<b>" + esc(person.name) + "</b>님이 <b>" + esc(e.detail) + "</b> 완료하고 도장 " + (e.amount || 1) + "개 획득";
+        return (
+          '<li class="history-item"><span class="history-badge' + (isCoupon ? " coupon" : "") + '">' + (isCoupon ? "🎁" : "🔖") + "</span>" +
+          '<span class="history-text">' + text + "</span>" +
+          '<span class="history-time">' + fmtTime(e.at) + "</span></li>"
+        );
+      }).join("");
+      return '<section><div class="section-head"><h2>최근 기록</h2></div><ul class="history-list">' + items + "</ul></section>";
+    }
+
+    function renderSettingsModal() {
+      var a = S.config.personA, b = S.config.personB;
+      var taskListHtml = function (owner) {
+        var list = tasksFor(owner);
+        var rows = list.map(function (t) {
+          return '<li class="row-item"><span>' + esc(t.title) + '</span><span class="num">+' + (t.stamps || 1) + '개</span><button class="tiny-btn" data-del-task="' + t.id + '" aria-label="삭제">✕</button></li>';
+        }).join("");
+        return (
+          '<ul class="row-list">' + (rows || '<li class="row-item" style="color:var(--ink-soft)">할 일 없음</li>') + "</ul>" +
+          '<form class="add-row" data-add-task="' + owner + '"><input placeholder="새 할 일 추가" maxlength="30" required /><input class="cost" type="number" min="1" value="1" title="승인 시 도장 개수" required /><button class="btn btn-outline" type="submit">추가</button></form>'
+        );
+      };
+      var couponListHtml = function (owner) {
+        var list = couponsFor(owner);
+        var rows = list.map(function (c) {
+          return '<li class="row-item"><span>' + esc(c.title) + '</span><span class="num">' + c.cost + "개</span><button class=\"tiny-btn\" data-del-coupon=\"" + c.id + '" aria-label="삭제">✕</button></li>';
+        }).join("");
+        return (
+          '<ul class="row-list">' + (rows || '<li class="row-item" style="color:var(--ink-soft)">쿠폰 없음</li>') + "</ul>" +
+          '<form class="add-row" data-add-coupon="' + owner + '"><input placeholder="쿠폰 이름" maxlength="20" required /><input class="cost" type="number" min="1" placeholder="개수" required /><button class="btn btn-outline" type="submit">추가</button></form>'
+        );
+      };
+      return (
+        '<div class="modal-overlay" id="settings-overlay"><div class="modal">' +
+        "<h2>설정</h2><p class=\"sub\">이름, 할 일, 쿠폰을 관리해요</p>" +
+        '<div class="settings-block"><h3>이름</h3><form id="names-form">' +
+        '<div class="field"><label>첫 번째 사람</label><input id="edit-nameA" value="' + esc(a.name) + '" maxlength="12" required /></div>' +
+        '<div class="field"><label>두 번째 사람</label><input id="edit-nameB" value="' + esc(b.name) + '" maxlength="12" required /></div>' +
+        '<button type="submit" class="btn btn-outline btn-block">이름 저장</button></form></div>' +
+        '<div class="settings-block"><h3>' + esc(a.name) + "의 할 일</h3>" + taskListHtml("a") + "</div>" +
+        '<div class="settings-block"><h3>' + esc(b.name) + "의 할 일</h3>" + taskListHtml("b") + "</div>" +
+        '<div class="settings-block"><h3>' + esc(a.name) + "의 쿠폰</h3>" + couponListHtml("a") + "</div>" +
+        '<div class="settings-block"><h3>' + esc(b.name) + "의 쿠폰</h3>" + couponListHtml("b") + "</div>" +
+        '<div class="modal-actions"><button class="btn btn-ghost" id="close-settings">닫기</button></div>' +
+        "</div></div>"
+      );
+    }
+
+    function bindMain() {
+      Array.prototype.forEach.call(document.querySelectorAll(".role-switch [data-owner]"), function (btn) {
+        btn.addEventListener("click", function () {
+          S.role = btn.getAttribute("data-owner");
+          try { localStorage.setItem(ROLE_KEY, S.role); } catch (e) {}
+          render();
+        });
+      });
+      Array.prototype.forEach.call(document.querySelectorAll("[data-toggle]"), function (btn) {
+        if (btn.disabled) return;
+        btn.addEventListener("click", function () {
+          var taskId = btn.getAttribute("data-toggle");
+          var task = S.tasks.find(function (t) { return t.id === taskId; });
+          if (task) toggleTask(task);
+        });
+      });
+      Array.prototype.forEach.call(document.querySelectorAll("[data-confirm]"), function (btn) {
+        btn.addEventListener("click", function () {
+          var taskId = btn.getAttribute("data-confirm");
+          var task = S.tasks.find(function (t) { return t.id === taskId; });
+          if (task) confirmStamp(task, btn.closest(".task-row"));
+        });
+      });
+      Array.prototype.forEach.call(document.querySelectorAll("[data-redeem]"), function (btn) {
+        if (btn.disabled) return;
+        btn.addEventListener("click", function () {
+          var id = btn.getAttribute("data-redeem");
+          var coupon = S.coupons.find(function (c) { return c.id === id; });
+          if (coupon) redeemCoupon(coupon);
+        });
+      });
+      var settingsBtn = document.getElementById("settings-btn");
+      settingsBtn.addEventListener("click", openSettings);
+    }
+
+    function openSettings() {
+      var wrap = document.createElement("div");
+      wrap.innerHTML = renderSettingsModal();
+      var overlay = wrap.firstChild;
+      document.body.appendChild(overlay);
+
+      function close() { overlay.remove(); }
+      overlay.addEventListener("click", function (ev) { if (ev.target === overlay) close(); });
+      document.getElementById("close-settings").addEventListener("click", close);
+      document.getElementById("names-form").addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        updateNames(document.getElementById("edit-nameA").value, document.getElementById("edit-nameB").value);
+        close();
+      });
+      Array.prototype.forEach.call(overlay.querySelectorAll("[data-add-task]"), function (form) {
+        form.addEventListener("submit", function (ev) {
+          ev.preventDefault();
+          var owner = form.getAttribute("data-add-task");
+          var titleInput = form.querySelector("input:not(.cost)");
+          var stampInput = form.querySelector("input.cost");
+          addTask(owner, titleInput.value, stampInput.value);
+          titleInput.value = "";
+          stampInput.value = "1";
+        });
+      });
+      Array.prototype.forEach.call(overlay.querySelectorAll("[data-del-task]"), function (b) {
+        b.addEventListener("click", function () { deleteTask(b.getAttribute("data-del-task")); b.closest("li").remove(); });
+      });
+      Array.prototype.forEach.call(overlay.querySelectorAll("[data-del-coupon]"), function (b) {
+        b.addEventListener("click", function () { deleteCoupon(b.getAttribute("data-del-coupon")); b.closest("li").remove(); });
+      });
+      Array.prototype.forEach.call(overlay.querySelectorAll("[data-add-coupon]"), function (form) {
+        form.addEventListener("submit", function (ev) {
+          ev.preventDefault();
+          var owner = form.getAttribute("data-add-coupon");
+          var titleInput = form.querySelector("input:not(.cost)");
+          var costInput = form.querySelector("input.cost");
+          addCoupon(owner, titleInput.value, costInput.value);
+          titleInput.value = ""; costInput.value = "";
+        });
+      });
+    }
+
+    // ---------- boot ----------
+    function subscribeAll() {
+      unsubs.push(store.doc(CONFIG_PATH).onSnapshot(function (snap) {
+        S.config = snap.exists ? snap.data() : null;
+        S.configLoaded = true;
+        render();
+      }, function () { S.configLoaded = true; render(); }));
+
+      unsubs.push(store.collection(TASKS).onSnapshot(function (qs) {
+        S.tasks = qs.docs.map(function (d) { var b = d.data(); return { id: d.id, owner: b.owner, title: b.title, order: b.order, stamps: b.stamps || 1 }; });
+        render();
+      }, function () {}));
+
+      unsubs.push(store.collection(LOGS).where("date", "==", todayStr()).onSnapshot(function (qs) {
+        var map = {};
+        qs.docs.forEach(function (d) { var b = d.data(); map[b.taskId] = b; });
+        S.todayLogs = map;
+        render();
+      }, function () {}));
+
+      unsubs.push(store.doc("stamps/a").onSnapshot(function (snap) {
+        S.stamps.a = (snap.exists && snap.data().count) || 0;
+        render();
+      }, function () {}));
+      unsubs.push(store.doc("stamps/b").onSnapshot(function (snap) {
+        S.stamps.b = (snap.exists && snap.data().count) || 0;
+        render();
+      }, function () {}));
+
+      unsubs.push(store.collection(COUPONS).onSnapshot(function (qs) {
+        S.coupons = qs.docs.map(function (d) { var b = d.data(); return { id: d.id, owner: b.owner, title: b.title, cost: b.cost, order: b.order }; });
+        render();
+      }, function () {}));
+
+      unsubs.push(store.collection(EVENTS).orderBy("at", "desc").limit(30).onSnapshot(function (qs) {
+        S.events = qs.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+        render();
+      }, function () {}));
+    }
+
+    function boot() {
+      if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "REPLACE_ME") {
+        root.innerHTML = renderSetupNeeded();
+        return;
+      }
+      render();
+      try {
+        var app = initializeApp(firebaseConfig);
+        var fdb = getFirestore(app);
+        store = createFirestoreStore(fdb);
+      } catch (e) {
+        root.innerHTML = renderSetupNeeded();
+        return;
+      }
+      S.ready = true;
+      subscribeAll();
+      render();
+    }
+
+    boot();
+  })();
+</script>
+</body>
+</html>
